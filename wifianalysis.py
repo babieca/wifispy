@@ -24,6 +24,8 @@ def main():
                "Probed ESSIDs"]
     data['header'] = []
     data['content'] = []
+    essid = ''
+    mac = ''
 
     for file in files:
         with open(file, 'r') as f:
@@ -32,6 +34,7 @@ def main():
             isContent = False
             for row in list(reader):
                 if row:
+                    row = [el.strip() for el in row]
                     if all([col.strip() in header for col in row]):
                         isHeader = True
                         isContent = False
@@ -41,15 +44,19 @@ def main():
                         isContent = True
                         continue
                     else:
+                        if mac and mac not in row:
+                            continue
+                        if essid and essid not in row:
+                            continue
                         if isHeader:
                             d = {}
                             for idx, key in enumerate(content):
-                                d[key] = row[idx].strip()
+                                d[key] = row[idx]
                             data['header'].append(d)
                         elif isContent:
                             d = {}
                             for idx, key in enumerate(content):
-                                d[key] = row[idx].strip()
+                                d[key] = row[idx]
                             data['content'].append(d)
 
     print(json.dumps(data, indent=4, sort_keys=False))
