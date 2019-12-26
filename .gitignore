@@ -5,3 +5,4 @@ outputs/
 .idea/
 *.core
 dataframes/
+.ipynb_checkpoints/
