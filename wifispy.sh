@@ -15,6 +15,7 @@ printf "Change interface $MON MAC address [y/N]?: "
 read -r user_mac
 
 if [[ $user_mac == 'y' ]]; then
+    rcctl start macrandrd
 	macrandr -c
 	echo "$MON interface changed"
 	echo "---------------------------------------"
@@ -51,9 +52,15 @@ if [[ $user_bssid != '' ]]; then
     user_opt="$user_opt --bssid $user_bssid"
 fi
 
+printf "ESSID: [<none>]: "
+read -r user_ebssid
+if [[ $user_essid != '' ]]; then
+    user_opt="$user_opt --essid $user_essid"
+fi
+
 while true
 do
-    NOW=$( date '+%F_%H:%M:%S' )
+    NOW=$( date '+%F_%H%M%S' )
     OFILE="$OPATH/scan-$NOW"
     $TOUT airodump-ng $MON $user_opt -w $OFILE -o csv --uptime --manufacturer --showack &
 	PID=$!
